@@ -102,13 +102,13 @@ app.put('/videos/:id', (req:Request, res: Response) => {
     const canBeDownloaded = req.body.canBeDownloaded;
     const minAgeRestriction = req.body.minAgeRestriction;
     const publicationDate = req.body.publicationDate;
-    //chlen
+
     let errors = []
     if (validateString(title, 40)){
         errors.push({message: ERRORS_MESSAGES.title_message, field: ERRORS_MESSAGES.title_field})
     }
     if (validateString(author, 20)){
-        errors.push({message: ERRORS_MESSAGES.title_message, field: ERRORS_MESSAGES.author_field})
+        errors.push({message: ERRORS_MESSAGES.author_message, field: ERRORS_MESSAGES.author_field})
     }
     for (const i in availableResolutions) {
         if (availableResolutions[i].length > 5){
@@ -124,7 +124,7 @@ app.put('/videos/:id', (req:Request, res: Response) => {
     if (validateNotDate(publicationDate)){
         errors.push({message: ERRORS_MESSAGES.publicationDate_message, field: ERRORS_MESSAGES.publicationDate_field})
     }
-    if (errors.length > 0) return res.status(STATUS.BAD_REQUEST_400).send({messagesErrors: errors})
+    if (errors.length > 0) return res.status(STATUS.BAD_REQUEST_400).send({errorsMessages: errors})
 
     const updateVideo = videosDb.find(v => v.id === +req.params.id)
     return updateVideo
