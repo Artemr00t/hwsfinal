@@ -111,7 +111,7 @@ app.put('/videos/:id', (req:Request, res: Response) => {
         errors.push({message: ERRORS_MESSAGES.title_message, field: ERRORS_MESSAGES.author_field})
     }
     for (const i in availableResolutions) {
-        if (availableResolutions[i].length > 0){
+        if (availableResolutions[i].length > 5){
             errors.push({message: ERRORS_MESSAGES.availableResolutions_message, field: ERRORS_MESSAGES.availableResolutions_field})
         }
     }
