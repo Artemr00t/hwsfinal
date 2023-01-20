@@ -46,7 +46,8 @@ type VideosDbType = {
     publicationDate: string
     availableResolutions: Array<string>
 }
-let videosDb: VideosDbType[] = []
+export let videosDb: VideosDbType[] = []
+export let sad = 1;
 
 videosRouter.get('/', (req:Request, res: Response) => {
     res.status(STATUS.OK_200).send(videosDb)
