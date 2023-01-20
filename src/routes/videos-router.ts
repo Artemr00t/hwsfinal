@@ -1,5 +1,6 @@
 import {Request, Response, Router} from "express";
 import {addDays} from "date-fns";
+import {videosRepository} from "../repositories/videos-repositories";
 
 export const videosRouter = Router({})
 
@@ -36,24 +37,13 @@ const validateNotBoolean = (value: any) => typeof value !== 'boolean';
 const validateAge = (value: number) => value < 1 || value > 18;
 const validateNotDate = (date: any) => typeof date !== 'string';
 
-type VideosDbType = {
-    id: number
-    title: string
-    author: string
-    canBeDownloaded: boolean
-    minAgeRestriction: null
-    createdAt: string
-    publicationDate: string
-    availableResolutions: Array<string>
-}
-export let videosDb: VideosDbType[] = []
-export let sad = 1;
 
 videosRouter.get('/', (req:Request, res: Response) => {
-    res.status(STATUS.OK_200).send(videosDb)
+    const videos = videosRepository.returnAllVideos();
+    res.status(STATUS.OK_200).send(videos)
 })
 videosRouter.get('/:id', (req:Request, res: Response) => {
-    const videoById = videosDb.find(v => v.id === +req.params.id)
+    const videoById = videosRepository.returnVideoById(+req.params.id)
     return videoById
         ? res.status(STATUS.OK_200).send(videoById)
         : res.sendStatus(STATUS.NOT_FOUND_404)
@@ -88,8 +78,8 @@ videosRouter.post('/', (req:Request, res: Response) => {
         publicationDate: addDays(dateNow, 1).toISOString(),
         availableResolutions
     }
-    videosDb.push(createNewVideo);
-    res.status(STATUS.CREATE_201).send(createNewVideo);
+    const addVideo = videosRepository.addVideo(createNewVideo)
+    res.status(STATUS.CREATE_201).send(addVideo);
 })
 videosRouter.put('/:id', (req:Request, res: Response) => {
     const title = req.body.title;
@@ -122,7 +112,7 @@ videosRouter.put('/:id', (req:Request, res: Response) => {
     }
     if (errors.length > 0) return res.status(STATUS.BAD_REQUEST_400).send({errorsMessages: errors})
 
-    const updateVideo = videosDb.find(v => v.id === +req.params.id)
+    const updateVideo = videosRepository.returnVideoById(+req.params.id)
     return updateVideo
         ? (
             updateVideo.title = title,
@@ -136,11 +126,8 @@ videosRouter.put('/:id', (req:Request, res: Response) => {
         : res.sendStatus(STATUS.NOT_FOUND_404)
 })
 videosRouter.delete('/:id', (req:Request, res: Response) => {
-    for (let i = 0; i < videosDb.length; i++) {
-        if (videosDb[i].id === +req.params.id){
-            videosDb.splice(i, 1);
-            res.sendStatus(STATUS.No_CONTENT_204);
-        }
-    }
-    res.sendStatus(STATUS.NOT_FOUND_404);
+    const isVideoDeleted = videosRepository.removeVideoById(+req.params.id)
+    isVideoDeleted
+        ? res.sendStatus(STATUS.No_CONTENT_204)
+        : res.sendStatus(STATUS.NOT_FOUND_404)
 })
