@@ -1,5 +1,4 @@
 import {Request, Response, Router} from "express";
-import {addDays} from "date-fns";
 import {videosRepository} from "../repositories/videos-repositories";
 
 export const videosRouter = Router({})
@@ -67,18 +66,7 @@ videosRouter.post('/', (req:Request, res: Response) => {
     }
     if (errors.length > 0) return res.status(STATUS.BAD_REQUEST_400).send({errorsMessages: errors})
 
-    const dateNow = new Date();
-    const createNewVideo = {
-        id: +dateNow,
-        title,
-        author,
-        canBeDownloaded: false,
-        minAgeRestriction: null,
-        createdAt: dateNow.toISOString(),
-        publicationDate: addDays(dateNow, 1).toISOString(),
-        availableResolutions
-    }
-    const addVideo = videosRepository.addVideo(createNewVideo)
+    const addVideo = videosRepository.addVideo(title, author, availableResolutions)
     res.status(STATUS.CREATE_201).send(addVideo);
 })
 videosRouter.put('/:id', (req:Request, res: Response) => {
