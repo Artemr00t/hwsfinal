@@ -30,12 +30,36 @@ enum ERRORS_MESSAGES {
     publicationDate_message = 'Invalid publicationDate',
     publicationDate_field = 'publicationDate',
 }
+enum QUALITY {
+     P144 = 'P144',
+     P240 = 'P240',
+     P360 = 'P360',
+     P480 = 'P480',
+     P720 = 'P720',
+     P1080 = 'P1080',
+     P1440 = 'P1440',
+     P2160 = 'P2160'
+}
 
-const validateString = (str: string, num:number) => !str || !str.trim() || str.length > num;
-const validateNotBoolean = (value: any) => typeof value !== 'boolean';
-const validateAge = (value: number) => value < 1 || value > 18;
-const validateNotDate = (date: any) => typeof date !== 'string';
-
+const validateString = (str: string, num:number) : boolean => !str || !str.trim() || str.length > num;
+const validateNotBoolean = (value: any) : boolean => typeof value !== 'boolean';
+const validateAge = (value: number) : boolean => value < 1 || value > 18;
+const validateNotDate = (date: any) : boolean => typeof date !== 'string';
+const validateQuality = (value: Array<string>) : boolean => {
+    for (let i = 0; i < value.length; i++) {
+        const qualityInArray = Object.values(QUALITY);
+        let resolutionFind = false;
+        for (let j = 0; j < qualityInArray.length; j++) {
+            if (value[i] === qualityInArray[j]){
+                resolutionFind = true;
+            }
+        }
+        if (!resolutionFind){
+            return true
+        }
+    }
+    return false
+}
 
 videosRouter.get('/', (req:Request, res: Response) => {
     const videos = videosRepository.returnAllVideos();
@@ -59,10 +83,8 @@ videosRouter.post('/', (req:Request, res: Response) => {
     if (validateString(author, 20)){
         errors.push({message: ERRORS_MESSAGES.author_message, field: ERRORS_MESSAGES.author_field})
     }
-    for (const i in availableResolutions) {
-        if (availableResolutions[i].length > 5){
-            errors.push({message: ERRORS_MESSAGES.availableResolutions_message, field: ERRORS_MESSAGES.availableResolutions_field})
-        }
+    if (validateQuality(availableResolutions)){
+        errors.push({message: ERRORS_MESSAGES.availableResolutions_message, field: ERRORS_MESSAGES.availableResolutions_field})
     }
     if (errors.length > 0) return res.status(STATUS.BAD_REQUEST_400).send({errorsMessages: errors})
 
