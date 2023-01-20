@@ -23,7 +23,7 @@ type VideosDbType = {
 }
 let videosDb: VideosDbType[] = []
 
-testingRouter.delete('/testing/all-data', (req:Request, res: Response) => {
+testingRouter.delete('/', (req:Request, res: Response) => {
     videosDb = [];
     res.sendStatus(STATUS.No_CONTENT_204);
 })
