@@ -51,7 +51,7 @@ let videosDb: VideosDbType[] = []
 videosRouter.get('/', (req:Request, res: Response) => {
     res.status(STATUS.OK_200).send(videosDb)
 })
-videosRouter.get('//:id', (req:Request, res: Response) => {
+videosRouter.get('/:id', (req:Request, res: Response) => {
     const videoById = videosDb.find(v => v.id === +req.params.id)
     return videoById
         ? res.status(STATUS.OK_200).send(videoById)
