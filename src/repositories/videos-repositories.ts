@@ -8,7 +8,7 @@ type VideosDbType = {
     publicationDate: string
     availableResolutions: Array<string>
 }
-let videosDb: VideosDbType[] = []
+export let videosDb: VideosDbType[] = []
 
 export const videosRepository = {
     returnAllVideos() : Array<VideosDbType> {
