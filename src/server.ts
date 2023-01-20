@@ -30,7 +30,7 @@ let videosDb: VideosDbType[] = []
 app.get('/', (req:Request, res: Response) => {
     res.send('Hello World!')
 })
-app.delete('/', (req:Request, res: Response) => {
+app.delete('/testing/all-data', (req:Request, res: Response) => {
     videosDb = [];
     res.sendStatus(STATUS.No_CONTENT_204);
 })
